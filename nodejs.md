@@ -202,5 +202,72 @@ export default authHandler;
 ### forgotPassword Controller
 
 ```javascript
+// Forgot password
+export const forgotPassword = async (req, res) => {
+  // Logic to send a password reset link to the user's email
+  const { email } = req.body;
 
+  if (!email) throw new Error("Please provide an email");
+
+  const getUser = await User.findOne({ email });
+
+  if (!getUser) throw new Error("User does not exist");
+
+  const resetCode = Math.floor(100000 + Math.random() * 900000);
+
+  await User.updateOne(
+    {
+      email,
+    },
+    { reset_code: resetCode },
+    {
+      runValidators: true,
+    }
+  );
+
+  await emailHandler(getUser.email);
+};
+```
+
+### resetPassword Handler
+
+```javascript
+export const resetPassword = async (req, res) => {
+  const { email, new_password, reset_code } = req.body;
+
+  // validations
+  if (!email) throw new Error("Please provide an email");
+  if (!new_password) throw new Error("Please provide a new password");
+  if (!reset_code) throw new Error("Please provide a reset code");
+
+  const userExist = await User.findOne({ email });
+
+  if (!userExist) throw new Error("User does not exist");
+
+  if (reset_code !== userExist.reset_code)
+    throw new Error("Invalid reset code");
+
+  const hashedPassword = await bcrypt.hash(new_password, 12);
+
+  await User.updateOne(
+    {
+      email,
+    },
+    {
+      password: hashedPassword,
+      reset_code: null,
+    },
+    {
+      runValidators: true,
+    }
+  );
+
+  await emailHandler(userExist.email);
+  // Generate JWT token for the logged-in user
+  const token = jwtManager(userExist);
+
+  res.status(200).json({
+    status: "Password Reset Successfully",
+  });
+};
 ```
