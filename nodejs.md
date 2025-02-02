@@ -126,6 +126,35 @@ const emailHandler = async (to, subject, text, html) => {
 export default emailHandler;
 ```
 
+### Email Handler Variant 2
+
+```javascript
+import express from "express";
+import sendEmail from "../services/emailService.js";
+
+const router = express.Router();
+
+router.post("/send", async (req, res) => {
+  const { to, subject, text, attachments } = req.body;
+
+  if (!to || !subject || !text) {
+    return res
+      .status(400)
+      .json({ status: "failed", message: "Missing fields" });
+  }
+
+  const result = await sendEmail({ to, subject, text, attachments });
+
+  if (result.success) {
+    res.json({ status: "success", message: "Email sent" });
+  } else {
+    res.status(500).json({ status: "failed", message: result.message });
+  }
+});
+
+export default router;
+```
+
 ### JWT Handler
 
 ```javascript
