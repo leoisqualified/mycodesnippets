@@ -95,3 +95,14 @@ admin.site.register(Books)
 admin.site.register(Member)
 admin.site.register(BorrowingRecord)
 ```
+
+## Create The SuperUser
+
+Most Web Application have a Admin. Django also provides this in all our web app
+We can create an admin like so
+
+```python
+python manage.py createsuperuser
+```
+
+Fill the required information after. You can visit the admin dashboard
