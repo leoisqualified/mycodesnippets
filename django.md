@@ -106,3 +106,15 @@ python manage.py createsuperuser
 ```
 
 Fill the required information after. You can visit the admin dashboard
+Access the Admin Panel:
+Run the server: python manage.py runserver.
+Visit http://127.0.0.1:8000/admin and log in with your superuser credentials.
+
+## View And Templates
+
+To Begin with Views and Templates in django. We first need to define the urls paths
+that will map to the respective views. We can configure this in our urls.py
+
+```python
+
+```
