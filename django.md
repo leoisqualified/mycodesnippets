@@ -110,10 +110,35 @@ Access the Admin Panel:
 Run the server: python manage.py runserver.
 Visit http://127.0.0.1:8000/admin and log in with your superuser credentials.
 
+## Django Forms
+
+We use forms to receive user input and persist in the database. The forms ensure that the data
+is validated. To start we need to create a forms.py in our app and import the models and form like so
+
+```python
+from django import forms
+from .models import Book #import the model
+```
+
+And then we begin to create the form like so
+
+```python
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = [
+            'title', 'author', 'isbn', 'subject', 'publication_year',
+            'publisher', 'language', 'material_type', 'total_copies'
+        ]
+        widgets = {
+            'publication_year': forms.NumberInput(attrs={'min': 1900, 'max': 2100}),
+        }
+```
+
 ## View And Templates
 
 To Begin with Views and Templates in django. We first need to define the urls paths
-that will map to the respective views. We can configure this in our urls.py
+that will map to the respective views with urls. We can configure this in our urls.py
 
 ```python
 
